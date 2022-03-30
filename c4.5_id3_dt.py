@@ -27,6 +27,21 @@ attributes = [
     ]
 visited_attributes = []
 
+
+class node:
+
+    def __init__(self, attribute_name, gain):
+        self.attribute_name = attribute_name
+        self.gain = gain
+        self.children = []
+    
+    def add_child(self, child_node):
+        self.children.append(child_node)
+    
+    def add_children(self, list_of_nodes):
+        self.children.extend(list_of_nodes)
+
+
 def log(num):
     if num == 0: return 0
     return math.log(num,2)
@@ -47,13 +62,26 @@ def read_from_csv():
         attribute_values["Duration"].add(row[6])
         attribute_values["Effect"].add(row[7])
 
-
-def tree():
+    
+def generate_decision_tree():
     attr_gain = []
     for attribute in attributes:
         attr_gain.append((attribute, gain(tuples, attribute)))
 
-    print(attr_gain)    
+    max_attribute_gain = attr_gain[0]
+    for attr in attr_gain:
+        if attr[1] > max_attribute_gain[1]:
+            max_attribute_gain = attr
+    
+    print(max_attribute_gain) 
+    root = node(max_attribute_gain[0], max_attribute_gain[1])
+
+    root.add_children(list(attribute_values[max_attribute_gain[0]]))
+    for child in list(attribute_values[max_attribute_gain[0]]):
+        new_node = node(child, 0)
+        root.add_child(new_node)
+    
+    #make max_attribute_gain a node and create its values as children
 
 
 
@@ -75,6 +103,7 @@ def gain(dataset, attribute_name): #dataset is filtered to just attribute_name
     for value in attribute_values[attribute_name]: # loop through attribute values and prepare dataset for each value
         value_subset = [row for row in dataset if value in row]
         values_entropy[value] = [len(value_subset), entropy(value_subset)]
+    
     gain_dataset_attribute = ds_entropy
     for ent_pair in values_entropy:
         value_prob = values_entropy[ent_pair][0]/len(dataset)
@@ -88,4 +117,4 @@ def gain(dataset, attribute_name): #dataset is filtered to just attribute_name
 
 if __name__ == "__main__":
     read_from_csv()
-    tree()
+    generate_decision_tree()
