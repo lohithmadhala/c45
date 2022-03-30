@@ -14,17 +14,15 @@ import pdb
 '''
 tuples = []
 attribute_values = {
-    "Region": set(),
-    "Epicenter": set(),
-    "Distance_from_shore": set(),
-    "Depth": set(),
-    "Scale": set(),
-    "Duration": set(),
-    "Effect":set()
+    "Latitude": set(),
+    "Longitude": set(),
+    "DepthMeters": set(),
+    "MagType": set(),
+    "Magnitude": set(),
+    "potential_blast": set(),
+    "bix_potential_blasts":set()
 }
-attributes = [
-    "Region","Epicenter", "Distance_from_shore", "Depth", "Scale", "Duration", "Effect"
-    ]
+attributes = ["Latitude", "Longitude", "DepthMeters","MagType", "Magnitude", "potential_blast", "bix_potential_blasts"]
 visited_attributes = []
 
 
@@ -47,20 +45,20 @@ def log(num):
     return math.log(num,2)
 
 def read_from_csv():
-    with open('earthquake.csv', 'r') as f:
+    with open('Earthquakes_earthquakes.csv', 'r') as f:
         reader = csv.reader(f)
         next(reader)
         global tuples
         tuples = list(reader) 
     
     for row in tuples:
-        attribute_values["Region"].add(row[1])
-        attribute_values["Epicenter"].add(row[2])
-        attribute_values["Distance_from_shore"].add(row[3])
-        attribute_values["Depth"].add(row[4])
-        attribute_values["Scale"].add(row[5])
-        attribute_values["Duration"].add(row[6])
-        attribute_values["Effect"].add(row[7])
+        attribute_values["Latitude"].add(row[1])
+        attribute_values["Longitude"].add(row[2])
+        attribute_values["DepthMeters"].add(row[3])
+        attribute_values["MagType"].add(row[5])
+        attribute_values["Magnitude"].add(row[6])
+        attribute_values["potential_blast"].add(row[10])
+        attribute_values["bix_potential_blasts"].add(row[11])
 
     
 def generate_decision_tree():
@@ -88,8 +86,8 @@ def generate_decision_tree():
 def entropy(dataset):
     ent = 0
     # pdb.set_trace()
-    positive = len([yes for yes in dataset if yes[7] == "Effect"])
-    negative = len([no for no in dataset if no[7] == "No effect"]) #len(dataset) - positive
+    positive = len([yes for yes in dataset if yes[7] == 1])
+    negative = len([no for no in dataset if no[7] == 0]) #len(dataset) - positive
     
     positive_prob = positive/len(dataset)
     negative_prob = negative/len(dataset)
