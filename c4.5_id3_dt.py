@@ -59,15 +59,14 @@ def gain(dataset, attribute_name): #dataset is filtered to just attribute_name
     values_entropy = {}
     for value in attribute_values[attribute_name]: # loop through attribute values and prepare dataset for each value
         value_subset = [row for row in dataset if value in row]
-        values_entropy[value] = entropy(value_subset)
+        values_entropy[value] = [len(value_subset), entropy(value_subset)]
     
-    max_entropy = -10000
-    value_name = ""
-    for value in values_entropy:
-        if values_entropy[value] > max_entropy:
-            max_entropy = values_entropy[value]
-            value_name = value
-    return [value_name, max_entropy]
+    gain_dataset_attribute = ds_entropy
+    for entropy in values_entropy:
+        value_prob = entropy[0]/len(dataset)
+        gain_dataset_attribute -= value_prob * entropy[1]
+    
+    return gain_dataset_attribute
     
     
 
