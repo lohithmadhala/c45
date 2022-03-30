@@ -1,5 +1,7 @@
 import csv
 import math
+import pdb
+
 
 '''
 1 - region
@@ -23,8 +25,10 @@ attribute_values = {
 attributes = [
     "Region","Epicenter", "Distance_from_shore", "Depth", "Scale", "Duration", "Effect"
     ]
+visited_attributes = []
 
 def log(num):
+    if num == 0: return 0
     return math.log(num,2)
 
 def read_from_csv():
@@ -43,10 +47,21 @@ def read_from_csv():
         attribute_values["Duration"].add(row[6])
         attribute_values["Effect"].add(row[7])
 
+
+def tree():
+    attr_gain = []
+    for attribute in attributes:
+        attr_gain.append((attribute, gain(tuples, attribute)))
+
+    print(attr_gain)    
+
+
+
 def entropy(dataset):
     ent = 0
-    postive = len([yes for yes in dataset if yes[6] == "Effect"])
-    negative = len([no for no in dataset if no[6] == "No effect"]) #len(dataset) - positive
+    # pdb.set_trace()
+    positive = len([yes for yes in dataset if yes[7] == " Effect"])
+    negative = len([no for no in dataset if no[7] == " No effect"]) #len(dataset) - positive
     
     positive_prob = positive/len(dataset)
     negative_prob = negative/len(dataset)
@@ -60,11 +75,10 @@ def gain(dataset, attribute_name): #dataset is filtered to just attribute_name
     for value in attribute_values[attribute_name]: # loop through attribute values and prepare dataset for each value
         value_subset = [row for row in dataset if value in row]
         values_entropy[value] = [len(value_subset), entropy(value_subset)]
-    
     gain_dataset_attribute = ds_entropy
-    for entropy in values_entropy:
-        value_prob = entropy[0]/len(dataset)
-        gain_dataset_attribute -= value_prob * entropy[1]
+    for ent_pair in values_entropy:
+        value_prob = values_entropy[ent_pair][0]/len(dataset)
+        gain_dataset_attribute -= value_prob * values_entropy[ent_pair][1]
     
     return gain_dataset_attribute
     
@@ -74,3 +88,4 @@ def gain(dataset, attribute_name): #dataset is filtered to just attribute_name
 
 if __name__ == "__main__":
     read_from_csv()
+    tree()
