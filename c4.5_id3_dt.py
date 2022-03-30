@@ -88,8 +88,8 @@ def generate_decision_tree():
 def entropy(dataset):
     ent = 0
     # pdb.set_trace()
-    positive = len([yes for yes in dataset if yes[7] == " Effect"])
-    negative = len([no for no in dataset if no[7] == " No effect"]) #len(dataset) - positive
+    positive = len([yes for yes in dataset if yes[7] == "Effect"])
+    negative = len([no for no in dataset if no[7] == "No effect"]) #len(dataset) - positive
     
     positive_prob = positive/len(dataset)
     negative_prob = negative/len(dataset)
