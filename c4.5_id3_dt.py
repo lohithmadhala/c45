@@ -2,6 +2,8 @@ import csv
 import math
 import pdb
 
+# data set taken from
+# https://data.world/us-doe-gov/e8fc308b-97df-460e-bdc6-cce8eb82e943/workspace/file?filename=Earthquakes%2Fearthquakes.csv
 
 '''
 1 - region
@@ -67,10 +69,14 @@ def generate_decision_tree():
         attr_gain.append((attribute, gain(tuples, attribute)))
 
     max_attribute_gain = attr_gain[0]
-    for attr in attr_gain:
+    for attr in attr_gain:                      #ngl idk what this does
         if attr[1] > max_attribute_gain[1]:
             max_attribute_gain = attr
     
+    # for i in range(0, len(attr_gain)):        #but i think this is what should be done....?
+    #     if attr_gain[i] > max_attribute_gain: #purely because i dont understand the for above
+    #         max_attribute_gain = attr_gain[i]
+
     print(max_attribute_gain) 
     root = node(max_attribute_gain[0], max_attribute_gain[1])
 
@@ -86,8 +92,8 @@ def generate_decision_tree():
 def entropy(dataset):
     ent = 0
     # pdb.set_trace()
-    positive = len([yes for yes in dataset if yes[7] == 1])
-    negative = len([no for no in dataset if no[7] == 0]) #len(dataset) - positive
+    positive = len([yes for yes in dataset if yes[10] == "1"])
+    negative = len([no for no in dataset if no[10] == "0"]) #len(dataset) - positive
     
     positive_prob = positive/len(dataset)
     negative_prob = negative/len(dataset)
