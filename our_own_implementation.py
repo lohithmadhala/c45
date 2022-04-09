@@ -1,18 +1,17 @@
 import csv
 import math
-import pdb
 
 # data set taken from
 # https://data.world/us-doe-gov/e8fc308b-97df-460e-bdc6-cce8eb82e943/workspace/file?filename=Earthquakes%2Fearthquakes.csv
 
 '''
-1 - region
-2 - epicenter
-3 - distance from coast
-4 - depth
-5 - scale
-6 - duration 
-7 - effect (target variable)
+1 - Latitude
+2 - Longitude
+3 - DepthMeters
+4 - MagType
+5 - Magnitude
+6 - potential_blast 
+7 - bix_potential_blasts
 '''
 tuples = []
 attribute_values = {
@@ -28,6 +27,7 @@ attributes = ["Latitude", "Longitude", "DepthMeters","MagType", "Magnitude", "po
 visited_attributes = []
 
 
+#Class for storing decision tree values
 class node:
 
     def __init__(self, attribute_name, gain):
@@ -47,12 +47,14 @@ def log(num):
     return math.log(num,2)
 
 def read_from_csv():
+    #Read data from csv
     with open('Earthquakes_earthquakes.csv', 'r') as f:
         reader = csv.reader(f)
         next(reader)
         global tuples
         tuples = list(reader) 
     
+    #Get only the attributes we need
     for row in tuples:
         attribute_values["Latitude"].add(row[1])
         attribute_values["Longitude"].add(row[2])
@@ -65,25 +67,28 @@ def read_from_csv():
     
 def generate_decision_tree():
     attr_gain = []
+    #Calculate gain for given attribute
     for attribute in attributes:
         attr_gain.append((attribute, gain(tuples, attribute)))
 
     max_attribute_gain = attr_gain[0]
-    for attr in attr_gain:                      #ngl idk what this does
+    #Get attribute with highest gain
+    for attr in attr_gain:                      
         if attr[1] > max_attribute_gain[1]:
             max_attribute_gain = attr
-    
-    # for i in range(0, len(attr_gain)):        #but i think this is what should be done....?
-    #     if attr_gain[i] > max_attribute_gain: #purely because i dont understand the for above
-    #         max_attribute_gain = attr_gain[i]
 
-    print(max_attribute_gain) 
+    print(attr_gain) #Change this value to max_attribute_gain to see which attribute is selected
+
     root = node(max_attribute_gain[0], max_attribute_gain[1])
 
+    #Attempt to create tree and assign values
     root.add_children(list(attribute_values[max_attribute_gain[0]]))
     for child in list(attribute_values[max_attribute_gain[0]]):
         new_node = node(child, 0)
         root.add_child(new_node)
+
+    
+    # generate_decision_tree("""" couldn't get recursive call to work """)
     
     #make max_attribute_gain a node and create its values as children
 
@@ -91,7 +96,6 @@ def generate_decision_tree():
 
 def entropy(dataset):
     ent = 0
-    # pdb.set_trace()
     positive = len([yes for yes in dataset if yes[10] == "1"])
     negative = len([no for no in dataset if no[10] == "0"]) #len(dataset) - positive
     
