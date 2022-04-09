@@ -95,13 +95,17 @@ def generate_decision_tree():
 
 
 def entropy(dataset):
+    #Entropy of a dataset is a calculated based on shannon entropy.
+    #In this case, the dataset[i][10] is our target variable that we wil be predction for.
     ent = 0
-    positive = len([yes for yes in dataset if yes[10] == "1"])
-    negative = len([no for no in dataset if no[10] == "0"]) #len(dataset) - positive
-    
-    positive_prob = positive/len(dataset)
+    positive = len([yes for yes in dataset if yes[10] == "1"]) #calculates the probablity for a desired result (although 1 refers to an impactful eartquake)
+    negative = len([no for no in dataset if no[10] == "0"]) #calculates the probablity for an undesired result 
+
+    #calculates the probablity
+    positive_prob = positive/len(dataset) 
     negative_prob = negative/len(dataset)
 
+    #cacluates the entropy
     ent = - positive_prob * log(positive_prob) - negative_prob * log(negative_prob)
     return ent
 
